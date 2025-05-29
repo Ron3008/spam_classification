@@ -3,3 +3,4 @@ joblib
 scikit-learn
 python-docx
 PyMuPDF
+pandas
