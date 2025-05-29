@@ -79,7 +79,7 @@ if input_type == "Text":
         pass
 else:
     file = st.file_uploader("Upload file:", type=['txt', 'docx', 'pdf'])
-   if st.button("Predict"):
+    if st.button("Predict"):
       if email_text.strip() != "":
         clean_text = preprocess_text(email_text)
         hasil = predict([clean_text])
