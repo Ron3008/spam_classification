@@ -64,36 +64,20 @@ if input_type == "Text":
         clean_text = preprocess_text(email_text)
         hasil = predict([clean_text])
         st.success(f"Prediction: {label_converter(hasil)}")
-      elif file is not None:
-        full_text = extract_file(file)
-        if full_text.strip() == "":
-            st.warning("File kosong atau format tidak dikenali.")
-        else:
-            clean_text = preprocess_text(full_text)
-            st.write("📄 Preview file content:")
-            st.write(full_text[:300] + "..." if len(full_text) > 300 else full_text)
-            hasil = predict([clean_text])
-            st.success(f"Prediction: {label_converter(hasil)}")
-    else:
-        st.warning("Please input text or upload a file.")
         pass
 else:
     file = st.file_uploader("Upload file:", type=['txt', 'docx', 'pdf'])
     if st.button("Predict"):
-      if email_text.strip() != "":
-        clean_text = preprocess_text(email_text)
-        hasil = predict([clean_text])
-        st.success(f"Prediction: {label_converter(hasil)}")
-      elif file is not None:
-        full_text = extract_file(file)
-        if full_text.strip() == "":
-            st.warning("File kosong atau format tidak dikenali.")
-        else:
-            clean_text = preprocess_text(full_text)
-            st.write("📄 Preview file content:")
-            st.write(full_text[:300] + "..." if len(full_text) > 300 else full_text)
-            hasil = predict([clean_text])
-            st.success(f"Prediction: {label_converter(hasil)}")
+      if file is not None:
+      full_text = extract_file(file)
+      if full_text.strip() == "":
+        st.warning("File kosong atau format tidak dikenali.")
+      else:
+          clean_text = preprocess_text(full_text)
+          st.write("📄 Preview file content:")
+          st.write(full_text[:300] + "..." if len(full_text) > 300 else full_text)
+          hasil = predict([clean_text])
+          st.success(f"Prediction: {label_converter(hasil)}")
     else:
         st.warning("Please input text or upload a file.")
         pass
