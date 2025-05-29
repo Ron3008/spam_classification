@@ -34,18 +34,16 @@ def preprocess_text(text):
 
 def predict(text_list):
     try:
-        vect = vectorizer.transform(text_list).toarray() 
+        vect = vectorizer.transform(text_list)
         prob = model.predict_proba(vect)
-        if "spam" in model.classes_:
-            spam_index = list(model.classes_).index("spam")
-        else:
-            spam_index = 1
+        spam_index = list(model.classes_).index("spam")
         spam_score = prob[:, spam_index][0]
+        st.write(f"📊 Confidence (Spam): {spam_score * 100:.2f}%")
         label = "Spam" if spam_score > 0.5 else "Not Spam"
         return label
     except Exception as e:
-        st.error(f"Prediction failed: {e}")
-        return "ERROR"
+        st.error(f"Gagal melakukan prediksi: {e}")
+        return ["ERROR"]
       
 def label_converter(label):
     if label == "ham":
