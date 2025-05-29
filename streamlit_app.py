@@ -33,8 +33,7 @@ def extract_file(file):
 
 def predict(text_list):
   try:
-    st.write("Input ke vectorizer:", text_list)
-    vect = vectorizer.transform(text_list)
+    vect = vectorizer.transform(text_list).toarray()
     st.write("Vector shape:", vect.shape)
     pred = model.predict(vect)
     return pred
