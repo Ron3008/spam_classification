@@ -11,7 +11,7 @@ st.title('E-mail Spam Classifier')
 st.write('Input your email text or upload file')
 st.write('File type accepted : txt, docx and pdf')
 
-email = st.text_area("Write your email here : ")
+email_text = st.text_area("Write your email here : ")
 
 file = st.file_uploader("Upload file here: ", type = ['txt', 'docs', 'pdf'])
 
@@ -40,8 +40,8 @@ def predict(text_list):
     return ["ERROR"]
 
 if st.button("Predict"):
-  if email:
-    hasil = predict([email.strip[]])
+  if email_text:
+    hasil = predict([email_text.strip[]])
     st.success(f"Prediction : {hasil[0]}")
   elif file:
     texts = extract_text_from_file(file)
