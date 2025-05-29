@@ -60,20 +60,11 @@ input_type = st.radio("Pilih tipe input:", ("Text", "File"))
 if input_type == "Text":
     email_text = st.text_area("Write your email here:")
     if st.button("Predict"):
-        # lakukan prediksi text
-        pass
-else:
-    file = st.file_uploader("Upload file:", type=['txt', 'docx', 'pdf'])
-    if st.button("Predict") and uploaded_file is not None:
-        # lakukan prediksi file
-        pass
-
-if st.button("Predict"):
-    if email_text.strip() != "":
+      if email_text.strip() != "":
         clean_text = preprocess_text(email_text)
         hasil = predict([clean_text])
         st.success(f"Prediction: {label_converter(hasil)}")
-    elif file is not None:
+      elif file is not None:
         full_text = extract_file(file)
         if full_text.strip() == "":
             st.warning("File kosong atau format tidak dikenali.")
@@ -85,5 +76,27 @@ if st.button("Predict"):
             st.success(f"Prediction: {label_converter(hasil)}")
     else:
         st.warning("Please input text or upload a file.")
+        pass
+else:
+    file = st.file_uploader("Upload file:", type=['txt', 'docx', 'pdf'])
+   if st.button("Predict"):
+      if email_text.strip() != "":
+        clean_text = preprocess_text(email_text)
+        hasil = predict([clean_text])
+        st.success(f"Prediction: {label_converter(hasil)}")
+      elif file is not None:
+        full_text = extract_file(file)
+        if full_text.strip() == "":
+            st.warning("File kosong atau format tidak dikenali.")
+        else:
+            clean_text = preprocess_text(full_text)
+            st.write("📄 Preview file content:")
+            st.write(full_text[:300] + "..." if len(full_text) > 300 else full_text)
+            hasil = predict([clean_text])
+            st.success(f"Prediction: {label_converter(hasil)}")
+    else:
+        st.warning("Please input text or upload a file.")
+        pass
+
 
 
