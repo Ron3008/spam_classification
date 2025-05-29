@@ -11,11 +11,6 @@ st.title('E-mail Spam Classifier')
 st.write('Input your email text or upload file')
 st.write('File type accepted : txt, docx and pdf')
 
-if "history" not in st.session_state:
-    st.session_state.history = []
-if "show_all_history" not in st.session_state:
-    st.session_state.show_all_history = False
-
 def extract_file(file):
   if file.name.endswith(".txt"):
     return file.read().decode("utf-8")
@@ -41,7 +36,7 @@ def predict(text_list):
     try:
         vect = vectorizer.transform(text_list).toarray()
         prob = model.predict_proba(vect)
-        pred = model.predict(vect)[0]  
+        pred = model.predict(vect)[0]  # prediksi: 'spam' atau 'ham'
         
         pred_index = list(model.classes_).index(pred)
         pred_confidence = prob[:, pred_index][0]
@@ -72,51 +67,26 @@ input_type = st.segmented_control("Pilih tipe input:", ["Text", "File"])
 if input_type == "Text":
     email_text = st.text_area("Write your email here:")
     if st.button("Predict"):
-        if email_text.strip() != "":
-            clean_text = preprocess_text(email_text)
-            hasil, confidence = predict([clean_text])
-            st.markdown(f"""
-            ### Prediction: **{hasil}**
-            Confidence: **{confidence * 100:.2f}%**
-            """)
-            # Simpan ke history
-            st.session_state.history.insert(0, {"text": email_text, "result": hasil, "confidence": confidence})
-        else:
-            st.warning("Please input text.")
+      if email_text.strip() != "":
+        clean_text = preprocess_text(email_text)
+        hasil = predict([clean_text])
+        st.success(f"Prediction: {label_converter(hasil)}")
+    else:
+      st.warning("Please input text.")
+    pass
 else:
     file = st.file_uploader("Upload file:", type=['txt', 'docx', 'pdf'])
     if st.button("Predict"):
-        if file is not None:
-            full_text = extract_file(file)
-            if full_text.strip() == "":
-                st.warning("File kosong atau format tidak dikenali.")
-            else:
-                clean_text = preprocess_text(full_text)
-                st.write("Preview file content:")
-                st.write(full_text[:300] + "..." if len(full_text) > 300 else full_text)
-                hasil, confidence = predict([clean_text])
-                st.markdown(f"""
-                ### Prediction: **{hasil}**
-                Confidence: **{confidence * 100:.2f}%**
-                """)
-                # Simpan ke history
-                st.session_state.history.insert(0, {"text": full_text, "result": hasil, "confidence": confidence})
+      if file is not None:
+        full_text = extract_file(file)
+        if full_text.strip() == "":
+          st.warning("File kosong atau format tidak dikenali.")
         else:
-            st.warning("Please upload a file.")
-
-
-if st.session_state.history:
-    st.subheader("History Terbaru")
-    for item in st.session_state.history[:2]:
-        st.write(f"**Input:** {item['text'][:100]}{'...' if len(item['text'])>100 else ''}")
-        st.write(f"**Result:** {item['result']} (Confidence: {item['confidence']*100:.2f}%)")
-        st.write("---")
-
-    if len(st.session_state.history) > 2:
-        if st.button("View More History"):
-            for item in st.session_state.history[2:]:
-                st.write(f"**Input:** {item['text'][:100]}{'...' if len(item['text'])>100 else ''}")
-                st.write(f"**Result:** {item['result']} (Confidence: {item['confidence']*100:.2f}%)")
-                st.write("---")
-
-
+          clean_text = preprocess_text(full_text)
+          st.write("Preview file content:")
+          st.write(full_text[:300] + "..." if len(full_text) > 300 else full_text)
+          hasil = predict([clean_text])
+          st.success(f"Prediction: {label_converter(hasil)}")
+    else:
+        st.warning("Please upload a file.")
+    pass
