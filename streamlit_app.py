@@ -41,7 +41,7 @@ def predict(text_list):
 
 if st.button("Predict"):
   if email_text:
-    hasil = predict([email_text.strip[]])
+    hasil = predict([email_text.strip()])
     st.success(f"Prediction : {hasil[0]}")
   elif file:
     texts = extract_text_from_file(file)
