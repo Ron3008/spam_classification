@@ -41,14 +41,24 @@ def predict(text_list):
     st.error(f"Gagal melakukan prediksi: {e}")
     return ["ERROR"]
 
+def label_converter(label):
+    if label == "ham":
+        return "Not Spam"
+    elif label == "spam":
+        return "Spam"
+    else:
+        return label
+
 if st.button("Predict"):
   if email_text:
     hasil = predict([email_text.strip()])
-    st.success(f"Prediction : {hasil[0]}")
+    st.success(f"Prediction: {label_converter(hasil[0])}")
   elif file:
     texts = extract_text_from_file(file)
     if texts:
-      hasil = predict(texts)
+      full_text = " ".join(texts)
+      hasil = predict([full_text.strip()])
+      st.success(f"Prediction: {label_converter(hasil[0])}")
       for text, pred in zip(texts, hasil):
         if text.strip():
           st.write(f"{text[:100]} -> {pred}")
