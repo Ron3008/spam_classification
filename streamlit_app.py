@@ -13,20 +13,21 @@ st.write('File type accepted : txt, docx and pdf')
 
 email_text = st.text_area("Write your email here : ")
 
-file = st.file_uploader("Upload file here: ", type = ['txt', 'docs', 'pdf'])
+file = st.file_uploader("Upload file here: ", type = ['txt', 'docx', 'pdf'])
 
 def extract_file(file):
   if file.name.endswith(".txt"):
-    return file.read().decode("utf-8").splitlines()
+    return file.read().decode("utf-8")
   elif file.name.endswith(".docx"):
     doc = docx.Document(file)
-    return [para.text for para in doc.paragraphs if para.text.strip() != ""]
+    full_text = "\n".join([para.text for para in doc.paragraphs if para.text.strip() != ""])
+    return full_text
   elif file.name.endswith(".pdf"):
     doc = fitz.open(stream = file.read(), filetype = "pdf")
     text = ""
     for page in doc:
       text += page.get_text()
-    return text.split("\n")
+    return text
   else :
     st.warning("File type unknown")
     return []
@@ -37,16 +38,19 @@ def preprocess_text(text):
 
 def predict(text_list):
     try:
-        vect = vectorizer.transform(text_list).toarray()
+        vect = vectorizer.transform(text_list) 
         prob = model.predict_proba(vect)
-        spam_index = list(model.classes_).index("spam")
+        if "spam" in model.classes_:
+            spam_index = list(model.classes_).index("spam")
+        else:
+            spam_index = 1
         spam_score = prob[:, spam_index][0]
         st.write(f"Spam score: {spam_score:.2f}")
         label = "Spam" if spam_score > 0.5 else "Not Spam"
         return label
     except Exception as e:
-        st.error(f"Gagal melakukan prediksi: {e}")
-        return ["ERROR"]
+        st.error(f"Prediction failed: {e}")
+        return "ERROR"
       
 def label_converter(label):
     if label == "ham":
@@ -57,20 +61,22 @@ def label_converter(label):
         return label
 
 if st.button("Predict"):
-  if email_text:
-    clean_text = preprocess_text(email_text)
-    hasil = predict([clean_text])
-    st.success(f"Prediction: {label_converter(hasil)}")
-  elif file:
-    lines = extract_file(file)
-    full_text = " ".join(lines)
-    clean_text = preprocess_text(full_text)
-    st.write("📄 Isi file (preview):")
-    st.write(full_text[:300] + "..." if len(full_text) > 300 else full_text)
-    result = predict([clean_text])
-    st.success(f"📌 Prediction: {result}")
-else:
-  st.warning("Input text or file")
+    if email_text.strip() != "":
+        clean_text = preprocess_text(email_text)
+        hasil = predict([clean_text])
+        st.success(f"Prediction: {label_converter(hasil)}")
+    elif file is not None:
+        full_text = extract_file(file)
+        if full_text.strip() == "":
+            st.warning("File kosong atau format tidak dikenali.")
+        else:
+            clean_text = preprocess_text(full_text)
+            st.write("📄 Preview file content:")
+            st.write(full_text[:300] + "..." if len(full_text) > 300 else full_text)
+            hasil = predict([clean_text])
+            st.success(f"Prediction: {label_converter(hasil)}")
+    else:
+        st.warning("Please input text or upload a file.")
   
 
 
