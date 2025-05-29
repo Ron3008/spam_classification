@@ -30,7 +30,11 @@ def extract_file(file):
   else :
     st.warning("File type unknown")
     return []
-    
+
+def preprocess_text(text):
+    return text.lower().strip()
+
+
 def predict(text_list):
     try:
         vect = vectorizer.transform(text_list).toarray()
@@ -38,7 +42,8 @@ def predict(text_list):
         spam_index = list(model.classes_).index("spam")
         spam_score = prob[:, spam_index][0]
         st.write(f"Spam score: {spam_score:.2f}")
-        return ["Spam" if spam_score > 0.5 else "Not Spam"]
+        label = "Spam" if spam_score > 0.5 else "Not Spam"
+        return label
     except Exception as e:
         st.error(f"Gagal melakukan prediksi: {e}")
         return ["ERROR"]
@@ -53,17 +58,17 @@ def label_converter(label):
 
 if st.button("Predict"):
   if email_text:
-    hasil = predict([email_text.strip()])
-    st.success(f"Prediction: {label_converter(hasil[0])}")
+    clean_text = preprocess_text(email_text)
+    hasil = predict([clean_text])
+    st.success(f"Prediction: {label_converter(hasil)}")
   elif file:
-    texts = extract_text_from_file(file)
-    if texts:
-      full_text = " ".join(texts)
-      hasil = predict([full_text.strip()])
-      st.success(f"Prediction: {label_converter(hasil[0])}")
-      for text, pred in zip(texts, hasil):
-        if text.strip():
-          st.write(f"{text[:100]} -> {pred}")
+    lines = extract_file(file)
+    full_text = " ".join(lines)
+    clean_text = preprocess_text(full_text)
+    st.write("📄 Isi file (preview):")
+    st.write(full_text[:300] + "..." if len(full_text) > 300 else full_text)
+    result = predict([clean_text])
+    st.success(f"📌 Prediction: {result}")
 else:
   st.warning("Input text or file")
   
