@@ -77,5 +77,17 @@ if st.button("Predict"):
     else:
         st.warning("Please input text or upload a file.")
   
+input_type = st.radio("Pilih tipe input:", ("Text", "File"))
+
+if input_type == "Text":
+    email_text = st.text_area("Write your email here:")
+    if st.button("Predict"):
+        # lakukan prediksi text
+        pass
+else:
+    uploaded_file = st.file_uploader("Upload file:", type=['txt', 'docx', 'pdf'])
+    if st.button("Predict") and uploaded_file is not None:
+        # lakukan prediksi file
+        pass
 
 
