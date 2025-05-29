@@ -74,18 +74,13 @@ if input_type == "Text":
     if st.button("Predict"):
         if email_text.strip() != "":
             clean_text = preprocess_text(email_text)
-            with st.spinner("Predicting..."):
-                hasil, confidence = predict([clean_text])
-            if hasil != "ERROR":
-                st.markdown(f"""
-                ### Prediction: **{hasil}**
-                Confidence: **{confidence*100:.2f}%**
-                """)
-                st.session_state.history.append({
-                    "text": clean_text,
-                    "prediction": hasil,
-                    "confidence": confidence
-                })
+            hasil, confidence = predict([clean_text])
+            st.markdown(f"""
+            ### Prediction: **{hasil}**
+            Confidence: **{confidence * 100:.2f}%**
+            """)
+            # Simpan ke history
+            st.session_state.history.insert(0, {"text": email_text, "result": hasil, "confidence": confidence})
         else:
             st.warning("Please input text.")
 else:
@@ -99,45 +94,29 @@ else:
                 clean_text = preprocess_text(full_text)
                 st.write("Preview file content:")
                 st.write(full_text[:300] + "..." if len(full_text) > 300 else full_text)
-                with st.spinner("Predicting..."):
-                    hasil, confidence = predict([clean_text])
-                if hasil != "ERROR":
-                    st.markdown(f"""
-                    ### Prediction: **{hasil}**
-                    Confidence: **{confidence*100:.2f}%**
-                    """)
-                    st.session_state.history.append({
-                        "text": clean_text,
-                        "prediction": hasil,
-                        "confidence": confidence
-                    })
+                hasil, confidence = predict([clean_text])
+                st.markdown(f"""
+                ### Prediction: **{hasil}**
+                Confidence: **{confidence * 100:.2f}%**
+                """)
+                # Simpan ke history
+                st.session_state.history.insert(0, {"text": full_text, "result": hasil, "confidence": confidence})
         else:
             st.warning("Please upload a file.")
 
 
-st.markdown("---")
-st.header("Prediction History")
+if st.session_state.history:
+    st.subheader("History Terbaru")
+    for item in st.session_state.history[:2]:
+        st.write(f"**Input:** {item['text'][:100]}{'...' if len(item['text'])>100 else ''}")
+        st.write(f"**Result:** {item['result']} (Confidence: {item['confidence']*100:.2f}%)")
+        st.write("---")
 
-history_len = len(st.session_state.history)
-if history_len == 0:
-    st.info("No prediction history yet.")
-else:
-    to_show = st.session_state.history if st.session_state.show_all_history else st.session_state.history[-2:]
-    for i, item in enumerate(reversed(to_show), 1):
-        st.markdown(f"**{i}. Text:** {item['text'][:100]}{'...' if len(item['text']) > 100 else ''}")
-        st.markdown(f"**Prediction:** {item['prediction']} (Confidence: {item['confidence']*100:.2f}%)")
-        st.markdown("---")
-
-    if not st.session_state.show_all_history and history_len > 2:
+    if len(st.session_state.history) > 2:
         if st.button("View More History"):
-            st.session_state.show_all_history = True
-    elif st.session_state.show_all_history:
-        if st.button("View Less History"):
-            st.session_state.show_all_history = False
+            for item in st.session_state.history[2:]:
+                st.write(f"**Input:** {item['text'][:100]}{'...' if len(item['text'])>100 else ''}")
+                st.write(f"**Result:** {item['result']} (Confidence: {item['confidence']*100:.2f}%)")
+                st.write("---")
 
-
-if st.button("Clear History"):
-    st.session_state.history = []
-    st.session_state.show_all_history = False
-    st.success("History cleared.")
 
