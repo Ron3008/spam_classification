@@ -63,7 +63,7 @@ if input_type == "Text":
         # lakukan prediksi text
         pass
 else:
-    uploaded_file = st.file_uploader("Upload file:", type=['txt', 'docx', 'pdf'])
+    file = st.file_uploader("Upload file:", type=['txt', 'docx', 'pdf'])
     if st.button("Predict") and uploaded_file is not None:
         # lakukan prediksi file
         pass
