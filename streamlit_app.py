@@ -36,7 +36,6 @@ def predict(text_list):
     try:
         vect = vectorizer.transform(text_list).toarray() 
         prob = model.predict_proba(vect)
-        st.write(f"Confidence level: {prob * 100:.2f}%")
         if "spam" in model.classes_:
             spam_index = list(model.classes_).index("spam")
         else:
