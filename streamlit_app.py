@@ -38,7 +38,7 @@ def predict(text_list):
         prob = model.predict_proba(vect)
         spam_index = list(model.classes_).index("spam")
         spam_score = prob[:, spam_index][0]
-        st.write(f"📊 Confidence (Spam): {spam_score:.2f * 100}%")
+        st.write(f"📊 Confidence (Spam): {spam_score * 100:.2f}%")
         label = "Spam" if spam_score > 0.5 else "Not Spam"
         return label
     except Exception as e:
