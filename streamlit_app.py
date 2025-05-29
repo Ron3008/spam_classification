@@ -30,17 +30,19 @@ def extract_file(file):
   else :
     st.warning("File type unknown")
     return []
-
+    
 def predict(text_list):
-  try:
-    vect = vectorizer.transform(text_list).toarray()
-    st.write("Vector shape:", vect.shape)
-    pred = model.predict(vect)
-    return pred
-  except Exception as e:
-    st.error(f"Gagal melakukan prediksi: {e}")
-    return ["ERROR"]
-
+    try:
+        vect = vectorizer.transform(text_list).toarray()
+        prob = model.predict_proba(vect)
+        spam_index = list(model.classes_).index("spam")
+        spam_score = prob[:, spam_index][0]
+        st.write(f"Spam score: {spam_score:.2f}")
+        return ["Spam" if spam_score > 0.5 else "Not Spam"]
+    except Exception as e:
+        st.error(f"Gagal melakukan prediksi: {e}")
+        return ["ERROR"]
+      
 def label_converter(label):
     if label == "ham":
         return "Not Spam"
