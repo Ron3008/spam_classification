@@ -69,10 +69,10 @@ else:
     file = st.file_uploader("Upload file:", type=['txt', 'docx', 'pdf'])
     if st.button("Predict"):
       if file is not None:
-      full_text = extract_file(file)
-      if full_text.strip() == "":
-        st.warning("File kosong atau format tidak dikenali.")
-      else:
+        full_text = extract_file(file)
+        if full_text.strip() == "":
+          st.warning("File kosong atau format tidak dikenali.")
+        else:
           clean_text = preprocess_text(full_text)
           st.write("📄 Preview file content:")
           st.write(full_text[:300] + "..." if len(full_text) > 300 else full_text)
