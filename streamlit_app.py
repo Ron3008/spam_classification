@@ -38,7 +38,7 @@ def preprocess_text(text):
 
 def predict(text_list):
     try:
-        vect = vectorizer.transform(text_list) 
+        vect = vectorizer.transform(text_list).toarray() 
         prob = model.predict_proba(vect)
         if "spam" in model.classes_:
             spam_index = list(model.classes_).index("spam")
