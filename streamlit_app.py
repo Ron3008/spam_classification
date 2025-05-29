@@ -11,10 +11,6 @@ st.title('E-mail Spam Classifier')
 st.write('Input your email text or upload file')
 st.write('File type accepted : txt, docx and pdf')
 
-email_text = st.text_area("Write your email here : ")
-
-file = st.file_uploader("Upload file here: ", type = ['txt', 'docx', 'pdf'])
-
 def extract_file(file):
   if file.name.endswith(".txt"):
     return file.read().decode("utf-8")
