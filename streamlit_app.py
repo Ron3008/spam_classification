@@ -36,14 +36,23 @@ def predict(text_list):
     try:
         vect = vectorizer.transform(text_list).toarray()
         prob = model.predict_proba(vect)
-        spam_index = list(model.classes_).index("spam")
-        spam_score = prob[:, spam_index][0]
-        st.write(f"📊 Confidence (Spam): {spam_score * 100:.2f}%")
-        label = "Spam" if spam_score > 0.5 else "Not Spam"
-        return label
+        pred = model.predict(vect)[0]  # prediksi: 'spam' atau 'ham'
+        
+        pred_index = list(model.classes_).index(pred)
+        pred_confidence = prob[:, pred_index][0]
+        
+        readable_label = "Spam" if pred == "spam" else "Not Spam"
+        
+        st.markdown(f"""
+        ### 📌 Prediction: **{readable_label}**
+        🧠 Confidence: **{pred_confidence * 100:.2f}%**
+        """)
+        
+        return readable_label
     except Exception as e:
         st.error(f"Gagal melakukan prediksi: {e}")
         return ["ERROR"]
+
       
 def label_converter(label):
     if label == "ham":
