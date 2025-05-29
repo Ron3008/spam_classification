@@ -32,12 +32,16 @@ def extract_file(file):
     return []
 
 def predict(text_list):
-  vector = vectorizer.transform(text_list)
-  return model.predict(vector)
+  try:
+    vect = vectorizer.transform(text_list)
+    return model.predict(vect)
+  except Exception as e:
+    st.error(f"Gagal melakukan prediksi: {e}")
+    return ["ERROR"]
 
 if st.button("Predict"):
   if email:
-    hasil = predict([email])
+    hasil = predict([email.strip[]])
     st.success(f"Prediction : {hasil[0]}")
   elif file:
     texts = extract_text_from_file(file)
