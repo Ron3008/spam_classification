@@ -36,7 +36,7 @@ def predict(text_list):
   return model.predict(vector)
 
 if st.button("Predict"):
-  if text:
+  if email:
     hasil = predict([email])
     st.success(f"Prediction : {hasil[0]}")
   elif file:
