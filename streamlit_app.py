@@ -44,8 +44,8 @@ def predict(text_list):
         readable_label = "Spam" if pred == "spam" else "Not Spam"
         
         st.markdown(f"""
-        ### 📌 Prediction: **{readable_label}**
-        🧠 Confidence: **{pred_confidence * 100:.2f}%**
+        ### Prediction: **{readable_label}**
+        Confidence: **{pred_confidence * 100:.2f}%**
         """)
         
         return readable_label
@@ -83,7 +83,7 @@ else:
           st.warning("File kosong atau format tidak dikenali.")
         else:
           clean_text = preprocess_text(full_text)
-          st.write("📄 Preview file content:")
+          st.write("Preview file content:")
           st.write(full_text[:300] + "..." if len(full_text) > 300 else full_text)
           hasil = predict([clean_text])
           st.success(f"Prediction: {label_converter(hasil)}")
