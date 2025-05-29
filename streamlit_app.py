@@ -55,7 +55,7 @@ def label_converter(label):
     else:
         return label
   
-input_type = st.radio("Pilih tipe input:", ("Text", "File"))
+input_type = st.segmented_control("Pilih tipe input:", ["Text", "File"])
 
 if input_type == "Text":
     email_text = st.text_area("Write your email here:")
