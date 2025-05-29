@@ -64,7 +64,9 @@ if input_type == "Text":
         clean_text = preprocess_text(email_text)
         hasil = predict([clean_text])
         st.success(f"Prediction: {label_converter(hasil)}")
-        pass
+    else:
+      st.warning("Please input text.")
+    pass
 else:
     file = st.file_uploader("Upload file:", type=['txt', 'docx', 'pdf'])
     if st.button("Predict"):
@@ -79,8 +81,8 @@ else:
           hasil = predict([clean_text])
           st.success(f"Prediction: {label_converter(hasil)}")
     else:
-        st.warning("Please input text or upload a file.")
-        pass
+        st.warning("Please upload a file.")
+    pass
 
 
 
