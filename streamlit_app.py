@@ -11,6 +11,11 @@ st.title('E-mail Spam Classifier')
 st.write('Input your email text or upload file')
 st.write('File type accepted : txt, docx and pdf')
 
+if "history" not in st.session_state:
+    st.session_state.history = []
+if "show_all_history" not in st.session_state:
+    st.session_state.show_all_history = False
+
 def extract_file(file):
   if file.name.endswith(".txt"):
     return file.read().decode("utf-8")
@@ -36,7 +41,7 @@ def predict(text_list):
     try:
         vect = vectorizer.transform(text_list).toarray()
         prob = model.predict_proba(vect)
-        pred = model.predict(vect)[0]  # prediksi: 'spam' atau 'ham'
+        pred = model.predict(vect)[0]  
         
         pred_index = list(model.classes_).index(pred)
         pred_confidence = prob[:, pred_index][0]
@@ -73,7 +78,6 @@ if input_type == "Text":
         st.success(f"Prediction: {label_converter(hasil)}")
     else:
       st.warning("Please input text.")
-    pass
 else:
     file = st.file_uploader("Upload file:", type=['txt', 'docx', 'pdf'])
     if st.button("Predict"):
@@ -89,7 +93,30 @@ else:
           st.success(f"Prediction: {label_converter(hasil)}")
     else:
         st.warning("Please upload a file.")
-    pass
+
+st.markdown("---")
+st.header("Prediction History")
+
+history_len = len(st.session_state.history)
+if history_len == 0:
+    st.info("No prediction history yet.")
+else:
+    to_show = st.session_state.history if st.session_state.show_all_history else st.session_state.history[-2:]
+    for i, item in enumerate(reversed(to_show), 1):
+        st.markdown(f"**{i}. Text:** {item['text'][:100]}{'...' if len(item['text']) > 100 else ''}")
+        st.markdown(f"**Prediction:** {item['prediction']} (Confidence: {item['confidence']*100:.2f}%)")
+        st.markdown("---")
+
+    if not st.session_state.show_all_history and history_len > 2:
+        if st.button("View More History"):
+            st.session_state.show_all_history = True
+    elif st.session_state.show_all_history:
+        if st.button("View Less History"):
+            st.session_state.show_all_history = False
 
 
+if st.button("Clear History"):
+    st.session_state.history = []
+    st.session_state.show_all_history = False
+    st.success("History cleared.")
 
