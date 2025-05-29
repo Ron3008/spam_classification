@@ -45,7 +45,6 @@ def predict(text_list):
         else:
             spam_index = 1
         spam_score = prob[:, spam_index][0]
-        st.write(f"Spam score: {spam_score:.2f}")
         label = "Spam" if spam_score > 0.5 else "Not Spam"
         return label
     except Exception as e:
