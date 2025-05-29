@@ -72,27 +72,48 @@ input_type = st.segmented_control("Pilih tipe input:", ["Text", "File"])
 if input_type == "Text":
     email_text = st.text_area("Write your email here:")
     if st.button("Predict"):
-      if email_text.strip() != "":
-        clean_text = preprocess_text(email_text)
-        hasil = predict([clean_text])
-        st.success(f"Prediction: {label_converter(hasil)}")
-    else:
-      st.warning("Please input text.")
+        if email_text.strip() != "":
+            clean_text = preprocess_text(email_text)
+            with st.spinner("Predicting..."):
+                hasil, confidence = predict([clean_text])
+            if hasil != "ERROR":
+                st.markdown(f"""
+                ### Prediction: **{hasil}**
+                Confidence: **{confidence*100:.2f}%**
+                """)
+                st.session_state.history.append({
+                    "text": clean_text,
+                    "prediction": hasil,
+                    "confidence": confidence
+                })
+        else:
+            st.warning("Please input text.")
 else:
     file = st.file_uploader("Upload file:", type=['txt', 'docx', 'pdf'])
     if st.button("Predict"):
-      if file is not None:
-        full_text = extract_file(file)
-        if full_text.strip() == "":
-          st.warning("File kosong atau format tidak dikenali.")
+        if file is not None:
+            full_text = extract_file(file)
+            if full_text.strip() == "":
+                st.warning("File kosong atau format tidak dikenali.")
+            else:
+                clean_text = preprocess_text(full_text)
+                st.write("Preview file content:")
+                st.write(full_text[:300] + "..." if len(full_text) > 300 else full_text)
+                with st.spinner("Predicting..."):
+                    hasil, confidence = predict([clean_text])
+                if hasil != "ERROR":
+                    st.markdown(f"""
+                    ### Prediction: **{hasil}**
+                    Confidence: **{confidence*100:.2f}%**
+                    """)
+                    st.session_state.history.append({
+                        "text": clean_text,
+                        "prediction": hasil,
+                        "confidence": confidence
+                    })
         else:
-          clean_text = preprocess_text(full_text)
-          st.write("Preview file content:")
-          st.write(full_text[:300] + "..." if len(full_text) > 300 else full_text)
-          hasil = predict([clean_text])
-          st.success(f"Prediction: {label_converter(hasil)}")
-    else:
-        st.warning("Please upload a file.")
+            st.warning("Please upload a file.")
+
 
 st.markdown("---")
 st.header("Prediction History")
