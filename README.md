@@ -19,19 +19,14 @@ Description of the app ...
 
 ## Demo App
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://spam_classification.streamlit.app/)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://spamemail-classification.streamlit.app/)
 
-## GitHub Codespaces
+## Cara Set-up Streamlit
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/streamlit/app-starter-kit?quickstart=1)
+1. Buat akun di Streamlit cloud menggunakan akun GitHub
+2. Tekan tombol Create App di pojok kanan atas
+3. Pencet deploy a public app from GitHub
+4. Gunakan repository ini untuk di bagian Repository (
+5. Pencet Deploy dan aplikasi bisa dipakai
 
-## Section Heading
 
-This is filler text, please replace this with text for this section.
-
-## Further Reading
-
-This is filler text, please replace this with a explanatory text about further relevant resources for this repo
-- Resource 1
-- Resource 2
-- Resource 3
